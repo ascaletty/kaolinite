@@ -1,8 +1,9 @@
 #define CLAY_IMPLEMENTATION
 #include "clay/clay.h"
 #include "raylib/clay_renderer_raylib.c"
-#include "stdio.h"
-#include "unistd.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 #define MAX_CHARS 100
 char input[MAX_CHARS+1]= "\0";
 int CursorPos= 0;
@@ -78,10 +79,11 @@ Clay_String HandleTypinginput(int key,int keyDown){
   if(size<=0){
     size=1;
   }
-  input[CursorPos]= '|';
   while((CursorPos>=0) && (key>0)){
      Clay_String name;
     input[CursorPos]= (char) key;
+    input[CursorPos+1]= '\0';
+    printf("input lenght :%d", strlen(input));
     size=insertText(input, CursorPos, CursorPos, input[CursorPos],false, false);
     printf("size %d\n", size);
     name.length= size;
@@ -102,15 +104,33 @@ Clay_String HandleTypinginput(int key,int keyDown){
   printf("CursorPos %d\n",CursorPos);
 
   }
-  else if(keyDown==1){
-  CursorPos--;
-  size=insertText(input, size, CursorPos, '|', true, false);
-  }
   else if(keyDown==2){
-  input[size+1]= '\0';
-  printf("%c\n",input); 
-  const char* pinput= &input;
-  system(input); 
+  printf("input lenght :%lu", strlen(input));
+  printf("we are in enter");
+  printf("size: %d",size);
+   char cmd[size+1];
+
+    char src[20];
+    src[20]= '\0';
+    src[0]= 'h'; 
+    src[1]= 'e'; 
+    src[2]='l';
+    src[3]= 'l'; 
+    src[4]= 'o';
+    
+  for(int i=0; i<=size+1; i++){
+      printf("%c\n",input[i]);
+    } 
+    strncpy(cmd, input, 5);
+    cmd[4] = '\0';
+    for(int i=0; i<5; i++){
+     printf( "%c\n",cmd[i]);
+    }
+  
+  printf("string : %s\n",cmd);
+  printf("cmd lenght: %lu", strlen(cmd)); 
+  printf("input lenght :%lu", strlen(input));
+  // system(cmd);
   }
   keepname.length= size;
   keepname.chars= &input[1];
