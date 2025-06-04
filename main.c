@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#define MAX_CHARS 100
-char input[MAX_CHARS+1]= "\0";
+#define MAX_CHARS 10
+char input[MAX_CHARS+1];
 int CursorPos= 0;
 int size=1;
 struct greaterSmaller {
@@ -48,7 +48,6 @@ int insertText(char input[], int size, int pos, int val, bool left, bool right){
   return size;
 }
 Struct backspace(char input[], int size, int pos){
-  input[pos-1]= '|';
   input[pos]= '\0';
   pos--;
   size--;
@@ -83,7 +82,7 @@ Clay_String HandleTypinginput(int key,int keyDown){
      Clay_String name;
     input[CursorPos]= (char) key;
     input[CursorPos+1]= '\0';
-    printf("input lenght :%d", strlen(input));
+   // printf("input length :%d", strlen(input));
     size=insertText(input, CursorPos, CursorPos, input[CursorPos],false, false);
     printf("size %d\n", size);
     name.length= size;
@@ -109,20 +108,27 @@ Clay_String HandleTypinginput(int key,int keyDown){
   printf("we are in enter");
   printf("size: %d",size);
    char cmd[size+1];
-
-    char src[20];
-    src[20]= '\0';
-    src[0]= 'h'; 
-    src[1]= 'e'; 
-    src[2]='l';
-    src[3]= 'l'; 
-    src[4]= 'o';
+    // char src[20];
+    // src[20]= '\0';
+    // src[0]= 'h'; 
+    // src[1]= 'e'; 
+    // src[2]='l';
+    // src[3]= 'l'; 
+    // src[4]= 'o';
+    // printf("src string len %d", strlen(src));
     
   for(int i=0; i<=size+1; i++){
       printf("%c\n",input[i]);
     } 
-    strncpy(cmd, input, 5);
-    cmd[4] = '\0';
+    printf("size+1 b4 %d\n",size+1);
+    int fullsize=size+1;
+    char bruhmoment[fullsize];
+    for(int i=0; i< MAX_CHARS; i++){
+     bruhmoment[i]=input[i];
+    }
+    strncpy(cmd, input, fullsize);
+    printf("size+1: %d\n", size+1);
+    cmd[size+1]='\0';
     for(int i=0; i<5; i++){
      printf( "%c\n",cmd[i]);
     }
