@@ -1,6 +1,3 @@
-[submodule "clays"]
-	path = clays
-	url = https://github.com/nicbarker/clay
 [submodule "clay"]
 	path = clay
 	url = https://github.com/nicbarker/clay
