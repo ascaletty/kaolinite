@@ -1,0 +1,2 @@
+vim 1* nvim main.c 
+git 1 make
