@@ -1,13 +1,14 @@
 #define CLAY_IMPLEMENTATION
 #include "clay/clay.h"
 #include "raylib/clay_renderer_raylib.c"
+#include "raylib/raylib.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #define MAX_CHARS 10
 char input[MAX_CHARS+1];
 int CursorPos= 0;
-int size=0;
+int size=1;
 const char commands[3][20]= {
   {"firefox"},
     {"kitty"},
@@ -35,6 +36,9 @@ int insertText(char input[], int size, int pos, int val){
   return size;
 }
 Struct backspace(char input[], int size, int pos){
+   if(CursorPos<=0){
+    CursorPos= 0;
+  }
   input[pos]= '\0';
   pos--;
   size--;
@@ -73,7 +77,8 @@ Clay_String HandleTypinginput(int key,int keyDown){
     size=insertText(input, size, CursorPos, input[CursorPos]);
     printf("size %d\n", size);
     name.length= size;
-    name.chars= &input[CursorPos];
+    // name.chars= &input[CursorPos];
+    name.chars= input;
     name.isStaticallyAllocated= false;
     CursorPos++;
     return name;
@@ -104,6 +109,7 @@ int match =  strcmp(input,commands[i]);
  if(match==0){
     printf("match found");
     system(commands[i]);
+   CloseWindow(); 
   }
   else{
    printf("match not found");
@@ -111,7 +117,7 @@ int match =  strcmp(input,commands[i]);
     }
   }
   keepname.length= size;
-  keepname.chars= &input[1];
+  keepname.chars= input;
   keepname.isStaticallyAllocated= true;
   return keepname;
 }
@@ -172,6 +178,7 @@ int main(void){
 	Clay_Raylib_Render(renderCommands, fonts);
 	EndDrawing();
 	}
+  Clay_Raylib_Close();
 }
 
 
