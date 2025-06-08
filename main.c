@@ -7,7 +7,13 @@
 #define MAX_CHARS 10
 char input[MAX_CHARS+1];
 int CursorPos= 0;
-int size=1;
+int size=0;
+const char commands[3][20]= {
+  {"firefox"},
+    {"kitty"},
+    {"rofi"}
+};
+
 struct greaterSmaller {
     int pos, size;
 };
@@ -23,28 +29,9 @@ Clay_Color COLOR_HOVERED= {203,4,4,255};
 Clay_Color COLOR_EVEN= {194,207,178,250};
 Clay_Color COLOR_ODD= {126,137,135,250};
 
-int insertText(char input[], int size, int pos, int val, bool left, bool right){
- 
-  if(left == true){
-  for(int i= size; i>pos; i--){
-    //printf("in inserText");
-    input[i]= input[i-1];
-  } 
-  
-  }
-  else if (right= true){
-
-  }
-  else{
-   for(int i= size; i>pos; i--){
-    //printf("in inserText");
-    input[i]= input[i-1];
-  }
+int insertText(char input[], int size, int pos, int val){
   input[pos]= val;
-
   size++;
-
-  }
   return size;
 }
 Struct backspace(char input[], int size, int pos){
@@ -70,7 +57,7 @@ CLAY_TEXT(programName, CLAY_TEXT_CONFIG({
 }
 Clay_String HandleTypinginput(int key,int keyDown){
   if(CursorPos<=0){
-    CursorPos= 1;
+    CursorPos= 0;
   }
   if(CursorPos>=100){
     CursorPos=0;
@@ -81,13 +68,13 @@ Clay_String HandleTypinginput(int key,int keyDown){
   while((CursorPos>=0) && (key>0)){
      Clay_String name;
     input[CursorPos]= (char) key;
-    input[CursorPos+1]= '\0';
+    //input[CursorPos+1]= '\0';
    // printf("input length :%d", strlen(input));
-    size=insertText(input, CursorPos, CursorPos, input[CursorPos],false, false);
+    size=insertText(input, size, CursorPos, input[CursorPos]);
     printf("size %d\n", size);
     name.length= size;
     name.chars= &input[CursorPos];
-    name.isStaticallyAllocated= true;
+    name.isStaticallyAllocated= false;
     CursorPos++;
     return name;
   }
@@ -104,39 +91,24 @@ Clay_String HandleTypinginput(int key,int keyDown){
 
   }
   else if(keyDown==2){
-  printf("input lenght :%lu", strlen(input));
-  printf("we are in enter");
-  printf("size: %d",size);
-   char cmd[size+1];
-    // char src[20];
-    // src[20]= '\0';
-    // src[0]= 'h'; 
-    // src[1]= 'e'; 
-    // src[2]='l';
-    // src[3]= 'l'; 
-    // src[4]= 'o';
-    // printf("src string len %d", strlen(src));
-    
-  for(int i=0; i<=size+1; i++){
-      printf("%c\n",input[i]);
-    } 
-    printf("size+1 b4 %d\n",size+1);
-    int fullsize=size+1;
-    char bruhmoment[fullsize];
-    for(int i=0; i< MAX_CHARS; i++){
-     bruhmoment[i]=input[i];
+    char cmd[size+2];
+    // strncpy(cmd,input,size+2);
+   for(int i=0; i<size+2; i++){
+      printf("char %d :%c\n", i, *(input+i));
     }
-    strncpy(cmd, input, fullsize);
-    printf("size+1: %d\n", size+1);
-    cmd[size+1]='\0';
-    for(int i=0; i<5; i++){
-     printf( "%c\n",cmd[i]);
+for(int i=0; i<3; i++){
+ // int match= strcmp(commands[i],input);
+  printf("command[ %d\n]: %s\n", i, commands[i]);
+  printf("output %d\n", strcmp(input,commands[i]));
+int match =  strcmp(input,commands[i]);
+ if(match==0){
+    printf("match found");
+    system(commands[i]);
+  }
+  else{
+   printf("match not found");
+ }
     }
-  
-  printf("string : %s\n",cmd);
-  printf("cmd lenght: %lu", strlen(cmd)); 
-  printf("input lenght :%lu", strlen(input));
-  // system(cmd);
   }
   keepname.length= size;
   keepname.chars= &input[1];
