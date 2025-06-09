@@ -108,8 +108,8 @@ for(int i=0; i<3; i++){
 int match =  strcmp(input,commands[i]);
  if(match==0){
     printf("match found");
-    system(commands[i]);
-   CloseWindow(); 
+    execlp("./kaolinite_run.sh", commands[i]); 
+  CloseWindow(); 
   }
   else{
    printf("match not found");
