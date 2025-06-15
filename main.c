@@ -1,3 +1,4 @@
+#include <strings.h>
 #define CLAY_IMPLEMENTATION
 #include "clay/clay.h"
 #include "raylib/clay_renderer_raylib.c"
@@ -7,16 +8,18 @@
 #include <string.h>
 #include <unistd.h>
 #define MAX_CHARS 10
-#define NUM_OF_PROGRAMS 3
+#define NUM_OF_PROGRAMS 4
 char input[MAX_CHARS + 1];
 int CursorPos = 0;
 int size = 1;
-const char commands[NUM_OF_PROGRAMS][20] = {{"firefox"}, {"kitty"}, {"rofi"}};
+char commands[NUM_OF_PROGRAMS][20] = {
+    {"firefox"}, {"kitty"}, {"rofi"}, {"nvim"}};
 
 struct posSize {
   int pos, size;
 };
 typedef struct posSize Struct;
+int indexofCommands[NUM_OF_PROGRAMS];
 void HandleClayErrors(Clay_ErrorData errorData) {
   printf("%s", errorData.errorText.chars);
 }
@@ -58,10 +61,10 @@ void showProgram(Clay_String programName) {
             {.fontId = 0, .fontSize = 36, .textColor = {255, 255, 255, 255}}));
   }
 }
-void showProgramList(const char *programAddress) {
+void showProgramList(char *programAddress) {
   Clay_String program;
   program.chars = programAddress;
-  program.length = strlen(programAddress);
+  program.length = 20;
   program.isStaticallyAllocated = false;
   CLAY({.backgroundColor = Clay_Hovered() ? COLOR_HOVERED : COLOR_INPUT,
         .layout = {.sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_FIT()}}}) {
@@ -111,18 +114,13 @@ Clay_String HandleTypinginput(int key, int keyDown) {
     printf("CursorPos %d\n", CursorPos);
 
   } else if (keyDown == 2) {
-    char cmd[size + 2];
-    // strncpy(cmd,input,size+2);
-    // for (int i = 0; i < size + 2; i++) {
-    //   printf("char %d :%c\n", i, *(input + i));
-    // }
     for (int i = 0; i < NUM_OF_PROGRAMS; i++) {
       // int match= strcmp(commands[i],input);
       int match = search(input, commands[i]);
       if (match == 1) {
         printf("match found");
-        execlp("./kaolinite_run.sh", commands[i]);
-        CloseWindow();
+        execlp("kaolinite_run", commands[i]);
+        // CloseWindow();
       } else {
         printf("match not found");
       }
@@ -145,7 +143,7 @@ int main(void) {
       (Clay_Dimensions){.width = GetScreenWidth(), .height = GetScreenHeight()},
       (Clay_ErrorHandler){HandleClayErrors});
   Font fonts[1];
-  fonts[0] = LoadFontEx("resources/Roboto-Regular.ttf", 48, 0, 400);
+  fonts[0] = LoadFontEx("/usr/share/fonts/TTF/FiraCode-Retina.ttf", 48, 0, 400);
   Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
   while (!WindowShouldClose()) {
     Vector2 mousePosition = GetMousePosition();
@@ -162,6 +160,7 @@ int main(void) {
       keyDown = 1;
     } else if (IsKeyPressed(KEY_ENTER)) {
       keyDown = 2;
+      printf("enter pressed");
     }
     Clay_String p1 = HandleTypinginput(key, keyDown);
 
@@ -174,7 +173,9 @@ int main(void) {
           .backgroundColor = COLOR_BACKGROUND}) {
       // text input here
       showProgram(p1);
+
       // program list here
+
       for (int i = 0; i < NUM_OF_PROGRAMS; i++) {
         showProgramList(commands[i]);
       }
