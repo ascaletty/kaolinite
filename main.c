@@ -1,8 +1,10 @@
 #include <strings.h>
 #define CLAY_IMPLEMENTATION
 #include "clay/clay.h"
+#include "conio.h/conio.h"
 #include "raylib/clay_renderer_raylib.c"
 #include "raylib/raylib.h"
+#include "zhash-c/src/zhash.h"
 #include <regex.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,6 +31,37 @@ Clay_Color COLOR_INPUT = {203, 4, 4, 230};
 Clay_Color COLOR_HOVERED = {203, 4, 4, 255};
 Clay_Color COLOR_EVEN = {194, 207, 178, 250};
 Clay_Color COLOR_ODD = {126, 137, 135, 250};
+GetPrograms() {
+  execl("kaolinite_path.sh", "");
+  FILE *fp = fopen("/home/ascaletty23/.cache/kaolinitedrun.cache", "r");
+  if (!fp) {
+    printf("CANT OPEN BOZO \n");
+  } else {
+    char buffer[1024];
+    int row = 0;
+    int collumn = 0;
+    while (fgets(buffer, 1024, fp)) {
+      collumn = 0;
+      row++;
+      if (row == 1) {
+        continue;
+      }
+      char *value = strtok(buffer, ",");
+      while (value) {
+        if (collumn = 0) {
+          printf("commonname:");
+        }
+        if (collumn == 1) {
+          printf("\t exec:");
+        }
+        printf("%s", value);
+        value = strtok(NULL, ", ");
+        collumn++;
+      }
+      printf("\n");
+    }
+  }
+}
 
 int insertText(char input[], int size, int pos, int val) {
   input[pos] = val;
@@ -114,6 +147,7 @@ Clay_String HandleTypinginput(int key, int keyDown) {
     printf("CursorPos %d\n", CursorPos);
 
   } else if (keyDown == 2) {
+    // GetPrograms();
     for (int i = 0; i < NUM_OF_PROGRAMS; i++) {
       // int match= strcmp(commands[i],input);
       int match = search(input, commands[i]);
@@ -173,7 +207,7 @@ int main(void) {
           .backgroundColor = COLOR_BACKGROUND}) {
       // text input here
       showProgram(p1);
-
+      GetPrograms();
       // program list here
 
       for (int i = 0; i < NUM_OF_PROGRAMS; i++) {

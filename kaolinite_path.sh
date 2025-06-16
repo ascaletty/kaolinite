@@ -13,5 +13,5 @@ until [ $i -ge $size ]; do
   ((i++))
 done
 for key in "${!applications[@]}"; do
-  printf "$key,${applications[$key]}," >>$HOME/.cache/kaolinitedrun.cache
+  echo "$key,${applications[$key]}" >>$HOME/.cache/kaolinitedrun.cache
 done
