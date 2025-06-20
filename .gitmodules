@@ -1,12 +1,6 @@
 [submodule "clay"]
 	path = clay
 	url = https://github.com/nicbarker/clay
-[submodule "conio.h"]
-	path = conio.h
-	url = https://github.com/zoelabbb/conio.h
-[submodule "zhash-c"]
-	path = zhash-c
-	url = https://github.com/zfletch/zhash-c
 [submodule "uthash"]
 	path = uthash
 	url = https://github.com/troydhanson/uthash
