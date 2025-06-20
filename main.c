@@ -26,12 +26,10 @@ void HandleClayErrors(Clay_ErrorData errorData) {
   printf("%s", errorData.errorText.chars);
 }
 
-// colors
-Clay_Color COLOR_BACKGROUND = {38, 152, 152, 255};
-Clay_Color COLOR_INPUT = {203, 4, 4, 230};
-Clay_Color COLOR_HOVERED = {203, 4, 4, 255};
-Clay_Color COLOR_EVEN = {194, 207, 178, 250};
-Clay_Color COLOR_ODD = {126, 137, 135, 250};
+Clay_Color COLOR_BACKGROUND = {40, 40, 40, 255};
+Clay_Color COLOR_INPUT = {146, 131, 116, 255};
+Clay_Color COLOR_HOVERED = {250, 189, 47, 255};
+Clay_Color COLOR_BORDER = {194, 207, 178, 250};
 struct hashtable {
   char id[1048]; /* key */
   char exec[1048];
@@ -112,7 +110,7 @@ Struct backspace(char input[], int size, int pos) {
 void showProgram(Clay_String programName) {
   CLAY({
       .backgroundColor = Clay_Hovered() ? COLOR_HOVERED : COLOR_INPUT,
-      .layout = {.sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_FIT()}},
+      .layout = {.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIT()}},
   }) {
     CLAY_TEXT(
         programName,
@@ -123,7 +121,7 @@ void showProgram(Clay_String programName) {
 void showProgramList(char *programAddress) {
   Clay_String program;
   program.chars = programAddress;
-  program.length = 1048;
+  program.length = strlen(programAddress);
   program.isStaticallyAllocated = true;
   CLAY({.backgroundColor = Clay_Hovered() ? COLOR_HOVERED : COLOR_INPUT,
         .layout = {.sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_FIXED(40)}}}) {
@@ -152,25 +150,15 @@ int search(char *str, char *s) {
 }
 
 int by_string(struct hashtable *a, struct hashtable *b) {
-  printf(" input passed to by_string%s\n", input);
   return search(input, a->id);
 }
-
 void exec_program(char *input) {
   struct hashtable *s = users;
-  // for (s; s != NULL; s = (struct hashtable *)(s->hh.next)) {
   printf("user id %s: name %s\n", s->id, s->exec);
-  // int match = search(input, s->id);
-  // if (match == 1) {
   printf("match found");
   struct hashtable *currentprogram = find_user(s->id);
   printf("currentprogam %s", currentprogram->exec);
   execlp("kaolinite_run", currentprogram->exec);
-  // CloseWindow();
-  // } else {
-  //   printf("match not found \n");
-  // }
-  // }
 }
 Clay_String HandleTypinginput(int key, int keyDown) {
   if (CursorPos <= 0) {
@@ -194,7 +182,6 @@ Clay_String HandleTypinginput(int key, int keyDown) {
     return name;
   }
   Clay_String keepname;
-
   // when backspace is pressed
   if (keyDown == 0) {
     Struct context;
@@ -214,9 +201,8 @@ Clay_String HandleTypinginput(int key, int keyDown) {
 }
 
 int main() {
-  printf("getcommans return val:%d\n", GetCommands());
-
-  Clay_Raylib_Initialize(500, 400, "test", FLAG_WINDOW_RESIZABLE);
+  GetCommands();
+  Clay_Raylib_Initialize(500, 500, "test", FLAG_WINDOW_RESIZABLE);
   uint64_t clayRequiredMemory = Clay_MinMemorySize();
   Clay_Arena clayMemory = (Clay_Arena){.memory = malloc(clayRequiredMemory),
                                        .capacity = clayRequiredMemory};
@@ -225,7 +211,8 @@ int main() {
       (Clay_Dimensions){.width = GetScreenWidth(), .height = GetScreenHeight()},
       (Clay_ErrorHandler){HandleClayErrors});
   Font fonts[1];
-  fonts[0] = LoadFontEx("/usr/share/fonts/TTF/FiraCode-Retina.ttf", 48, 0, 400);
+  fonts[0] = LoadFontEx("/usr/share/fonts/Adwaita/AdwaitaMono-Regular.ttf", 36,
+                        0, 400);
   Clay_SetMeasureTextFunction(Raylib_MeasureText, fonts);
   while (!WindowShouldClose()) {
     Vector2 mousePosition = GetMousePosition();
@@ -252,7 +239,7 @@ int main() {
     CLAY({.id = CLAY_ID("OuterContainer"),
           .layout = {.layoutDirection = CLAY_TOP_TO_BOTTOM,
                      .sizing = {CLAY_SIZING_GROW(0), CLAY_SIZING_GROW(0)},
-                     .padding = CLAY_PADDING_ALL(16),
+                     .padding = CLAY_PADDING_ALL(8),
                      .childGap = 5},
           .clip =
               {
